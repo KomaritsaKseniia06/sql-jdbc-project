@@ -1,25 +1,17 @@
 package com.InventorSoftAcademy;
-
+import com.InventorSoftAcademy.DAL.StudentDataAccessLayer;
+import com.InventorSoftAcademy.models.Student;
 import lombok.AllArgsConstructor;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 @AllArgsConstructor
 public class Main {
 
-    public static void main(String[] args) throws SQLException {
-        Connection connection = new ConnectionManager().getConnection();
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("Select * from students");
-            while (resultSet.next()) {
-                System.out.println(resultSet.getString("firstname") + "|"
-                + resultSet.getString("lastname") +  "|" + resultSet.getInt("age"));
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+
+    public static void main(String[] args) throws Exception {
+//        new StudentDataAccessLayer().create(new Student(7L, 23, "Aimee", "Chaney", "AimeeChaney@gmail.com", 5L));
+//        new StudentDataAccessLayer().read(2L);
+        new StudentDataAccessLayer().getAll();
+
+
     }
 }
