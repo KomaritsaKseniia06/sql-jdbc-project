@@ -27,12 +27,11 @@ public class StudentDataAccessLayer implements DataAccessLayer<Student> {
             statement.setString(4, student.getLastname());
             statement.setString(5, student.getEmail());
             statement.setLong(6, student.getFacultyId());
-            int rowsAffected = statement.executeUpdate();
-            System.out.println("Rows affected: " + rowsAffected);
+            statement.executeUpdate();
+            System.out.println("Student was added to DB");
         } catch (Exception e) {
             System.out.println(e);
         }
-        connection.close();
     }
 
     @Override
@@ -52,7 +51,6 @@ public class StudentDataAccessLayer implements DataAccessLayer<Student> {
                 facultyId = resultSet.getLong("faculty_id");
                 System.out.println(studentId + "|" + age + "|" + firstname + "|" + lastname + "|" + email + "|" + facultyId);
                 return new Student(studentId, age, firstname, lastname, email, facultyId);
-
             } else {
                 throw new StudentNotFoundException("Student not found with ID: " + id);
             }
@@ -63,14 +61,35 @@ public class StudentDataAccessLayer implements DataAccessLayer<Student> {
     }
 
     @Override
-    public void update(Student student) throws Exception {
-
+    public void update(Student student, String firstname, Long facultyId) throws Exception {
+        String query =
+                "UPDATE students SET age = ?, firstname = ?, lastname = ?, email = ?, faculty_id = ? WHERE student_id = ?";
+        Connection connection = new ConnectionManager().getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, student.getAge());
+            statement.setString(2, firstname);
+            statement.setString(3, student.getLastname());
+            statement.setString(4, student.getEmail());
+            statement.setLong(5, facultyId);
+            statement.setLong(6, student.getId());
+            statement.executeUpdate();
+            System.out.println("Student with id " + student.getId() + " was updated successfully");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
-
 
     @Override
     public void delete(Long id) throws Exception {
-
+        String query = "DELETE FROM students WHERE student_id = ?";
+        Connection connection = new ConnectionManager().getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, id);
+            statement.executeUpdate();
+            System.out.println("Student with id " + id + " was deleted successfully");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     @Override
@@ -95,7 +114,6 @@ public class StudentDataAccessLayer implements DataAccessLayer<Student> {
 
                 System.out.println(studentId + "|" + age + "|" + firstname + "|" + lastname + "|" + email + "|" + facultyId);
             }
-
             return listOfStudents;
         } catch (SQLException e) {
             System.out.println(e);

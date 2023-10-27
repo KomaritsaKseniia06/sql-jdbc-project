@@ -7,7 +7,7 @@ public interface DataAccessLayer<T> {
 
     T read(Long id) throws Exception;
 
-    void update(T entity) throws Exception;
+    void update(T entity, String firstname, Long facultyId) throws Exception;
 
     void delete(Long id) throws Exception;
 
